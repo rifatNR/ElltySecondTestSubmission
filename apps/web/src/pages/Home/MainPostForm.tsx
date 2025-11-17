@@ -60,7 +60,9 @@ const MainPostForm: React.FC = () => {
 
     return authUser ? (
         <div className="mb-10">
-            <h2 className="text-2xl font-medium mb-4">Create a post</h2>
+            <h1 className="text-2xl font-medium mb-4">
+                Start the chain of calculation.
+            </h1>
             {}
 
             <form onSubmit={handleSubmit}>
