@@ -1,5 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ProfileDropdown from "@/layouts/ProfileDropdown";
+import { Button } from "@/components/ui/button";
 import useAuth from "@/utils/hooks/useAuth";
 import { Link } from "wouter";
 
@@ -13,7 +12,7 @@ const getAvatarFallback = (name: string): string => {
 };
 
 const Navbar = () => {
-    const { authUser } = useAuth();
+    const { authUser, logout } = useAuth();
 
     return (
         <div className="fixed w-full shadow z-navbar bg-white">
@@ -25,18 +24,13 @@ const Navbar = () => {
                     </div>
                 </Link>
 
-                <div className="py-2">
+                <div className="">
                     {authUser ? (
-                        <ProfileDropdown>
-                            <Avatar>
-                                <AvatarImage src="https://github.com/shadcn.png" />
-                                <AvatarFallback>
-                                    {getAvatarFallback(authUser.username)}
-                                </AvatarFallback>
-                            </Avatar>
-                        </ProfileDropdown>
+                        <Button onClick={logout}>Logout</Button>
                     ) : (
-                        <></>
+                        <Link href="/auth/login">
+                            <Button>Login</Button>
+                        </Link>
                     )}
                 </div>
             </div>

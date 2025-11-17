@@ -1,4 +1,5 @@
-import Tree from "@/pages/Home/components/Tree";
+import Tree from "@/pages/Home/components/Tree/Tree";
+import MainPostForm from "@/pages/Home/MainPostForm";
 import useAuth from "@/utils/hooks/useAuth";
 import React from "react";
 
@@ -7,6 +8,7 @@ const Home = () => {
 
     return (
         <div className="pb-20">
+            <MainPostForm />
             <Tree />
         </div>
     );
