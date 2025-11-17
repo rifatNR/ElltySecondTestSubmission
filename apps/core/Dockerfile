@@ -6,7 +6,8 @@ COPY package*.json ./
 
 RUN npm install -g pnpm@9.15.9
 
-RUN pnpm install --ignore-workspace --no-frozen-lockfile
+# RUN pnpm install --ignore-workspace --no-frozen-lockfile
+RUN pnpm install
 
 COPY . .
 
