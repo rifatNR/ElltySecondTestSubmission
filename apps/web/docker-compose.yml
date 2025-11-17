@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  ellty-web:
+    image: ellty-web
+    build: .
+    # container_name: ellty-web
+    ports:
+      - "4444:4444"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    # stdin_open: true
+    # tty: true

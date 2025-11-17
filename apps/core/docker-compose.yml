@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  ellty-core:
+    image: 021891617126.dkr.ecr.ap-southeast-1.amazonaws.com/ellty
+    ports:
+      - 3333:3333
+    command: pnpm dev
+    restart: unless-stopped
+    networks:
+      - ellty-network
+    depends_on:
+      - timescaledb
+
+  timescaledb:
+      container_name: ellty-timescaledb
+      restart: unless-stopped
+      image: timescale/timescaledb:latest-pg15
+      ports:
+          - target: 5432
+            published: 5432
+      env_file:
+          - .env
+      volumes:
+        - ./timescaledb-data:/var/lib/postgresql/data
+      networks:
+        - ellty-network
+
+
+networks:
+    ellty-network:
+        name: ellty-network
+        external: true

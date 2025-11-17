@@ -1,0 +1,25 @@
+{
+    "name": "@ellty/migrator",
+    "version": "0.0.1",
+    "private": true,
+    "main": "dist/index",
+    "scripts": {
+        "migrate:create": "node-pg-migrate create",
+        "migrate:up": "dotenv -e ../../.env -- node-pg-migrate up -f migration-config.js",
+        "migrate:down": "dotenv -e ../../.env -- node-pg-migrate down",
+        "migrate:clear": "dotenv -e ../../.env -- node-pg-migrate down 0",
+        "migrate:redo": "dotenv -e ../../.env -- node-pg-migrate redo"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.5",
+        "node-pg-migrate": "7.6.1",
+        "pg": "8.12.0",
+        "ts-node": "10.9.2"
+    },
+    "volta": {
+        "node": "22.6.0"
+    },
+    "devDependencies": {
+        "dotenv-cli": "^7.4.2"
+    }
+}
