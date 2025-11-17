@@ -1,13 +1,13 @@
+import { nodeRouter } from "@/api/trpc/procedures/nodes.mjs";
 import { userRouter } from "@/api/trpc/procedures/users.mjs";
 import { privateProcedure, router, t } from "@/trpc.mjs";
 import { z } from "zod";
 
 export const appRouter = router({
     users: userRouter,
+    nodes: nodeRouter,
 
     checkPrivateRoute: privateProcedure.query(({ ctx }) => {
-        console.log("🚗🚙🏎️🚗🚙🏎️🚗🚙🏎️🚗🚙🏎️🚗🚙🏎️");
-
         return {
             authUset: ctx.user,
         };
