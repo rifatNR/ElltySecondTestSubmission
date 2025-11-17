@@ -68,7 +68,7 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
         });
     }
 
-    const { id, username, email } = decodedToken as JwtPayload;
+    const { id, username } = decodedToken as JwtPayload;
 
     if (!id || !username) {
         throw new TRPCError({
@@ -83,7 +83,6 @@ export const privateProcedure = publicProcedure.use(async (opts) => {
             user: {
                 id,
                 username,
-                email,
             },
         },
     });
