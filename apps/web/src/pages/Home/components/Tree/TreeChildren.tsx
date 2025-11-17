@@ -16,7 +16,7 @@ const Children = ({ parent, nodes }: { parent: Node; nodes: Node[] }) => {
             {nodes.map((item) => (
                 <div>
                     {/* Children acting as parent */}
-                    <div className="flex items-center justify-between">
+                    <div className="group flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <Avatar className="h-8 w-8">
                                 <AvatarImage src="https://img.freepik.com/premium-vector/cute-banana-cartoon-vector-icon-illustration-logo-mascot-hand-drawn-concept-trandy-cartoon_519183-187.jpg?w=360" />
@@ -39,7 +39,7 @@ const Children = ({ parent, nodes }: { parent: Node; nodes: Node[] }) => {
                             onClick={() => {
                                 setSelectedNode(item.id);
                             }}
-                            className="text-gray-500"
+                            className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                             <CirclePlus />
                         </button>

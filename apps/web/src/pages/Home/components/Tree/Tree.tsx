@@ -1,8 +1,11 @@
+import { selectedNodeAtom } from "@/atoms/baseAtom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import Children from "@/pages/Home/components/Tree/TreeChildren";
 import useAuth from "@/utils/hooks/useAuth";
 import { RouterOutputs, trpc, trpcErrorHandler } from "@/utils/trpc";
+import { useAtom } from "jotai";
+import { CirclePlus } from "lucide-react";
 import React, { useMemo } from "react";
 
 const nodesStatic = [
@@ -100,6 +103,7 @@ const buildTree = (flat: Node[]): Node[] => {
 
 const Tree = () => {
     const { authUser, logout } = useAuth();
+    const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
 
     const { data: nodesData } = trpc.nodes.list.useQuery(undefined, {
         enabled: !!authUser,
@@ -127,19 +131,29 @@ const Tree = () => {
             {treeData.map((item) => (
                 <div key={item.id} className="bg-slate-100 shadow p-5">
                     {/* Parent */}
-                    <div className="flex items-center gap-4">
-                        <Avatar className="h-12 w-12">
-                            <AvatarImage src="https://img.freepik.com/premium-vector/cute-banana-cartoon-vector-icon-illustration-logo-mascot-hand-drawn-concept-trandy-cartoon_519183-187.jpg?w=360" />
-                            <AvatarFallback>Mr Banana</AvatarFallback>
-                        </Avatar>
-                        <div className="">
-                            <div className="text-xl font-medium">
-                                Mr. Banana:{" "}
-                                <span className="text-red-500">
-                                    {item.result_value}
-                                </span>
+                    <div className="group flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <Avatar className="h-12 w-12">
+                                <AvatarImage src="https://img.freepik.com/premium-vector/cute-banana-cartoon-vector-icon-illustration-logo-mascot-hand-drawn-concept-trandy-cartoon_519183-187.jpg?w=360" />
+                                <AvatarFallback>Mr Banana</AvatarFallback>
+                            </Avatar>
+                            <div className="">
+                                <div className="text-xl font-medium">
+                                    Mr. Banana:{" "}
+                                    <span className="text-red-500">
+                                        {item.result_value}
+                                    </span>
+                                </div>
                             </div>
                         </div>
+                        <button
+                            onClick={() => {
+                                setSelectedNode(item.id);
+                            }}
+                            className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                            <CirclePlus />
+                        </button>
                     </div>
 
                     {/* Children */}
