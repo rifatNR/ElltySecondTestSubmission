@@ -33,7 +33,9 @@ app.use(
 );
 
 app.get("/", async (req: Request, res: Response) => {
-    res.json({ msg: "ellty server is running..." });
+    res.json({
+        msg: "ellty server is running...",
+    });
 });
 
 app.listen(port, () => {
