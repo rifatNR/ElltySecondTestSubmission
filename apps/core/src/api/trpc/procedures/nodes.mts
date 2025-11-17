@@ -23,7 +23,7 @@ export const nodeRouter = router({
         .query(async ({ ctx }) => {
             try {
                 const result = await ctx.psql.query(
-                    `SELECT id, parent_id, user_id, operation, right_value, result_value, created_at 
+                    `SELECT id, parent_id, user_id, operation, right_value::float, result_value::float, created_at 
                      FROM nodes 
                      ORDER BY created_at DESC`
                 );
@@ -54,7 +54,7 @@ export const nodeRouter = router({
                 const result = await ctx.psql.query(
                     `INSERT INTO nodes (user_id, result_value)
                      VALUES ($1, $2)
-                     RETURNING id, parent_id, user_id, operation, right_value, result_value, created_at`,
+                     RETURNING id, parent_id, user_id, operation, right_value::float, result_value::float, created_at`,
                     [ctx.user.id, input.right_value]
                 );
 
@@ -118,7 +118,7 @@ export const nodeRouter = router({
                 const result = await ctx.psql.query(
                     `INSERT INTO nodes (parent_id, user_id, operation, right_value, result_value)
                      VALUES ($1, $2, $3, $4, $5)
-                     RETURNING id, parent_id, user_id, operation, right_value, result_value, created_at`,
+                     RETURNING id, parent_id, user_id, operation, right_value::float, result_value::float, created_at`,
                     [
                         input.parent_id,
                         ctx.user.id,
