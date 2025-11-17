@@ -21,9 +21,8 @@ import { useEffect, useState } from "react";
 const OperationModal = () => {
     const utils = trpc.useUtils();
     const { logout } = useAuth();
-    const [selectedNode] = useAtom(selectedNodeAtom);
+    const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
 
-    const [open, setOpen] = useState(false);
     const [formData, setFormData] = useState<{
         operation: "+" | "-" | "*" | "/";
         right_value: number;
@@ -64,7 +63,7 @@ const OperationModal = () => {
             },
             {
                 onSuccess: () => {
-                    setOpen(false);
+                    setSelectedNode(null);
                     setFormData({ operation: "+", right_value: 0 });
                     utils.nodes.list.invalidate();
                 },
@@ -80,16 +79,13 @@ const OperationModal = () => {
         );
     };
 
-    useEffect(() => {
-        if (selectedNode) {
-            setOpen(true);
-        } else {
-            setOpen(false);
-        }
-    }, [selectedNode]);
-
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog
+            open={!!selectedNode}
+            onOpenChange={(open) => {
+                setSelectedNode(open ? selectedNode : null);
+            }}
+        >
             <DialogContent className="sm:max-w-[425px]">
                 <form onSubmit={handleSubmit}>
                     <DialogHeader>

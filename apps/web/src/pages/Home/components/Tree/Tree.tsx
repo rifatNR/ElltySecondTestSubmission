@@ -39,7 +39,6 @@ const Tree = () => {
     const [selectedNode, setSelectedNode] = useAtom(selectedNodeAtom);
 
     const { data: nodesData } = trpc.nodes.list.useQuery(undefined, {
-        enabled: !!authUser,
         onSuccess: (data) => {},
         onError: (error) => {
             const errorMessage = trpcErrorHandler(error, () => {
