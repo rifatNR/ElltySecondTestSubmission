@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import useAuth from "@/utils/hooks/useAuth";
-import { trpc } from "@/utils/trpc";
+import { trpc, trpcErrorHandler } from "@/utils/trpc";
 import { Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
 
 const MainPostForm: React.FC = () => {
-    const { authUser } = useAuth();
+    const utils = trpc.useUtils();
+    const { authUser, logout } = useAuth();
 
     const [numberValue, setNumberValue] = useState<number | "">("");
     const [error, setError] = useState<string | null>(null);
@@ -31,9 +33,18 @@ const MainPostForm: React.FC = () => {
             {
                 onSuccess: (data) => {
                     setNumberValue("");
+                    utils.nodes.list.invalidate();
                 },
                 onError: (error) => {
-                    console.log("Show toastr here: ", error);
+                    const errorMessage = trpcErrorHandler(error, () => {
+                        logout();
+                    });
+                    toast({
+                        variant: "destructive",
+                        title: errorMessage,
+                        duration: 3000,
+                        description: "",
+                    });
                 },
             }
         );
@@ -50,6 +61,7 @@ const MainPostForm: React.FC = () => {
     return authUser ? (
         <div className="mb-10">
             <h2 className="text-2xl font-medium mb-4">Create a post</h2>
+            {}
 
             <form onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between space-x-5">

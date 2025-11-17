@@ -14,8 +14,8 @@ const AuthPageLayout = ({ children }: Props) => {
         return null;
     }
 
-    return <>{children}</>;
-    // return <>{authUser ? <Redirect to="/" replace /> : children}</>;
+    // return <>{children}</>;
+    return <>{authUser ? <Redirect to="/" replace /> : children}</>;
 };
 
 export default AuthPageLayout;

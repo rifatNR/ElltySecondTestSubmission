@@ -2,15 +2,6 @@ import { Button } from "@/components/ui/button";
 import useAuth from "@/utils/hooks/useAuth";
 import { Link } from "wouter";
 
-const getAvatarFallback = (name: string): string => {
-    const words = name.trim().split(/\s+/);
-    const initials =
-        words.length > 1
-            ? `${words[0][0]}${words[words.length - 1][0]}`
-            : words[0][0];
-    return initials.toUpperCase();
-};
-
 const Navbar = () => {
     const { authUser, logout } = useAuth();
 

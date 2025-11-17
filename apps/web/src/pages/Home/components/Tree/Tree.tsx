@@ -1,9 +1,11 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from "@/hooks/use-toast";
 import Children from "@/pages/Home/components/Tree/TreeChildren";
-import { Node } from "@/utils/types";
+import useAuth from "@/utils/hooks/useAuth";
+import { RouterOutputs, trpc, trpcErrorHandler } from "@/utils/trpc";
 import React, { useMemo } from "react";
 
-const nodes = [
+const nodesStatic = [
     {
         id: "1",
         parent_id: null,
@@ -69,6 +71,9 @@ const nodes = [
     },
 ];
 
+type TreeNode = RouterOutputs["nodes"]["list"]["nodes"][0];
+type Node = TreeNode & { children?: TreeNode[] };
+
 const buildTree = (flat: Node[]): Node[] => {
     const map = new Map<string, Node>();
 
@@ -94,7 +99,28 @@ const buildTree = (flat: Node[]): Node[] => {
 };
 
 const Tree = () => {
-    const treeData = useMemo(() => buildTree(nodes), []);
+    const { authUser, logout } = useAuth();
+
+    const { data: nodesData } = trpc.nodes.list.useQuery(undefined, {
+        enabled: !!authUser,
+        onSuccess: (data) => {},
+        onError: (error) => {
+            const errorMessage = trpcErrorHandler(error, () => {
+                logout();
+            });
+            toast({
+                variant: "destructive",
+                title: errorMessage,
+                duration: 3000,
+                description: "",
+            });
+        },
+    });
+
+    const treeData = useMemo(
+        () => (nodesData?.nodes ? buildTree(nodesData.nodes) : []),
+        [nodesData]
+    );
 
     return (
         <div className="space-y-10">
