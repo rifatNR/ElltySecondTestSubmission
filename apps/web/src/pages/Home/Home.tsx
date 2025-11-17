@@ -1,3 +1,4 @@
+import OperationModal from "@/pages/Home/components/OperationModal";
 import Tree from "@/pages/Home/components/Tree/Tree";
 import MainPostForm from "@/pages/Home/MainPostForm";
 import useAuth from "@/utils/hooks/useAuth";
@@ -10,6 +11,7 @@ const Home = () => {
         <div className="pb-20">
             <MainPostForm />
             <Tree />
+            <OperationModal />
         </div>
     );
 };
