@@ -15,7 +15,7 @@ services:
     command: ["pnpm", "dev"]
 
   timescaledb:
-    container_name: ellty-timescaledb-core
+    container_name: ellty-timescaledb
     restart: unless-stopped
     image: timescale/timescaledb:latest-pg15
     ports:
