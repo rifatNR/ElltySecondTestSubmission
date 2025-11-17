@@ -1,32 +1,34 @@
-version: "3.8"
 services:
-  ellty-core:
-    image: 021891617126.dkr.ecr.ap-southeast-1.amazonaws.com/ellty
-    ports:
-      - 3333:3333
-    command: pnpm dev
+  core:
+    container_name: ellty-core
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
-    networks:
-      - ellty-network
+    working_dir: /app/apps/core
+    ports:
+      - "3333:3333"
+    environment:
+      NODE_ENV: development
     depends_on:
       - timescaledb
+    command: ["pnpm", "dev"]
 
   timescaledb:
-      container_name: ellty-timescaledb
-      restart: unless-stopped
-      image: timescale/timescaledb:latest-pg15
-      ports:
-          - target: 5432
-            published: 5432
-      env_file:
-          - .env
-      volumes:
-        - ./timescaledb-data:/var/lib/postgresql/data
-      networks:
-        - ellty-network
+    container_name: ellty-timescaledb-core
+    restart: unless-stopped
+    image: timescale/timescaledb:latest-pg15
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - core-timescaledb:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
-
-networks:
-    ellty-network:
-        name: ellty-network
-        external: true
+volumes:
+  core-timescaledb:
