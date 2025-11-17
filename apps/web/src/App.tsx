@@ -18,7 +18,7 @@ export default function App() {
                     url:
                         process.env.NODE_ENV == "development"
                             ? "http://localhost:3333/trpc"
-                            : "https://some-domain.com/trpc",
+                            : "https://elltysecondtestsubmission-production.up.railway.app/trpc",
                     async headers() {
                         return {
                             authorization: cookies.token
