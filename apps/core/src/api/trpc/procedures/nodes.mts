@@ -37,7 +37,7 @@ export const nodeRouter = router({
                         n.created_at
                     FROM nodes n
                     LEFT JOIN users u ON n.user_id = u.id
-                    ORDER BY n.created_at DESC`
+                    ORDER BY n.created_at ASC`
                 );
 
                 return {
