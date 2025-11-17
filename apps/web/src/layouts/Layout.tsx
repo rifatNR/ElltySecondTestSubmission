@@ -27,7 +27,7 @@ const Layout = ({ children }: Props) => {
     return (
         <>
             <Navbar />
-            <main className="max-w-7xl mx-auto px-5 min-h-[calc(100vh-5rem)] flex flex-col pt-20">
+            <main className="max-w-3xl mx-auto px-5 min-h-[calc(100vh-5rem)] flex flex-col pt-20">
                 {authUser ? children : <Redirect to="/auth/login" />}
             </main>
         </>

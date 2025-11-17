@@ -29,19 +29,6 @@ const ProfileDropdown = ({ children }: PropType) => {
                 <DropdownMenuLabel className="text-xl px-3 mb-2">
                     Hi, {authUser?.username}
                 </DropdownMenuLabel>
-                {/* <DropdownMenuGroup>
-                    <DropdownMenuItem className="text-lg cursor-pointer px-3">
-                        <User />
-                        <span>Profile</span>
-                    </DropdownMenuItem>
-                </DropdownMenuGroup> */}
-                <DropdownMenuItem
-                    onClick={() => navigate("/change-password")}
-                    className="text-lg cursor-pointer px-3"
-                >
-                    <KeyRound />
-                    <span>Change Password</span>
-                </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={logout}
                     className="py-2 text-lg cursor-pointer px-3"
