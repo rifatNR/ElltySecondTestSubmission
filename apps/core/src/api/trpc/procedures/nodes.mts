@@ -22,12 +22,15 @@ export const nodeRouter = router({
         )
         .query(async ({ ctx }) => {
             try {
-                // ctx.psql contains the PostgreSQL instance
-                // list all nodes
+                const result = await ctx.psql.query(
+                    `SELECT id, parent_id, user_id, operation, right_value, result_value, created_at 
+                     FROM nodes 
+                     ORDER BY created_at DESC`
+                );
 
                 return {
                     message: "Nodes fetched successfully.",
-                    nodes: [],
+                    nodes: result.rows,
                 };
             } catch (error) {
                 throw mapErrorToTRPCError(error);
@@ -46,12 +49,18 @@ export const nodeRouter = router({
                 node: nodeSchema,
             })
         )
-        .output(z.object({ message: z.string() }))
         .mutation(async ({ ctx, input }) => {
             try {
-                // Add a new node
+                const result = await ctx.psql.query(
+                    `INSERT INTO nodes (user_id, result_value)
+                     VALUES ($1, $2)
+                     RETURNING id, parent_id, user_id, operation, right_value, result_value, created_at`,
+                    [ctx.user.id, input.right_value]
+                );
+
                 return {
-                    message: "User synced",
+                    message: "Node created successfully.",
+                    node: result.rows[0],
                 };
             } catch (error) {
                 throw mapErrorToTRPCError(error);
@@ -61,7 +70,7 @@ export const nodeRouter = router({
     operateNode: privateProcedure
         .input(
             z.object({
-                parent_id: z.string().uuid().nullable(),
+                parent_id: z.string().uuid(),
                 operation: z.enum(["+", "-", "*", "/"]),
                 right_value: z.number(),
             })
@@ -72,12 +81,56 @@ export const nodeRouter = router({
                 node: nodeSchema,
             })
         )
-        .output(z.object({ message: z.string() }))
         .mutation(async ({ ctx, input }) => {
             try {
-                // Operate on a node
+                let result_value: number;
+
+                const parentResult = await ctx.psql.query(
+                    `SELECT result_value::float FROM nodes WHERE id = $1`,
+                    [input.parent_id]
+                );
+
+                if (parentResult.rows.length === 0) {
+                    throw new Error("Parent node not found");
+                }
+
+                const parent = parentResult.rows[0];
+                const parentResultValue = parent.result_value;
+
+                switch (input.operation) {
+                    case "+":
+                        result_value = parentResultValue + input.right_value;
+                        break;
+                    case "-":
+                        result_value = parentResultValue - input.right_value;
+                        break;
+                    case "*":
+                        result_value = parentResultValue * input.right_value;
+                        break;
+                    case "/":
+                        if (input.right_value === 0) {
+                            throw new Error("Cannot divide by zero.");
+                        }
+                        result_value = parentResultValue / input.right_value;
+                        break;
+                }
+
+                const result = await ctx.psql.query(
+                    `INSERT INTO nodes (parent_id, user_id, operation, right_value, result_value)
+                     VALUES ($1, $2, $3, $4, $5)
+                     RETURNING id, parent_id, user_id, operation, right_value, result_value, created_at`,
+                    [
+                        input.parent_id,
+                        ctx.user.id,
+                        input.operation,
+                        input.right_value,
+                        result_value,
+                    ]
+                );
+
                 return {
-                    message: "User synced",
+                    message: "Operation completed successfully.",
+                    node: result.rows[0],
                 };
             } catch (error) {
                 throw mapErrorToTRPCError(error);
