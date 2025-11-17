@@ -1,5 +1,8 @@
-export const unslugify = (slug: string): string => {
-    return slug
-        .replace(/[-_]/g, " ")
-        .replace(/\b\w/g, (char) => char.toUpperCase());
+export const getAvatarFallback = (name: string): string => {
+    const words = name.trim().split(/\s+/);
+    const initials =
+        words.length > 1
+            ? `${words[0][0]}${words[words.length - 1][0]}`
+            : words[0][0];
+    return initials.toUpperCase();
 };

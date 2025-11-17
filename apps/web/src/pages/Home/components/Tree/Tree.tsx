@@ -1,78 +1,12 @@
 import { selectedNodeAtom } from "@/atoms/baseAtom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
+import TreeAvatar from "@/pages/Home/components/Tree/TreeAvatar";
 import Children from "@/pages/Home/components/Tree/TreeChildren";
 import useAuth from "@/utils/hooks/useAuth";
 import { RouterOutputs, trpc, trpcErrorHandler } from "@/utils/trpc";
 import { useAtom } from "jotai";
 import { CirclePlus } from "lucide-react";
 import React, { useMemo } from "react";
-
-const nodesStatic = [
-    {
-        id: "1",
-        parent_id: null,
-        user_id: "xxx",
-        operation: null,
-        right_value: null,
-        result_value: 10,
-        created_at: "---",
-    },
-    {
-        id: "2",
-        parent_id: null,
-        user_id: "xxx",
-        operation: null,
-        right_value: null,
-        result_value: 11,
-        created_at: "---",
-    },
-    {
-        id: "3",
-        parent_id: null,
-        user_id: "xxx",
-        operation: null,
-        right_value: null,
-        result_value: 5,
-        created_at: "---",
-    },
-    {
-        id: "10",
-        parent_id: "1",
-        user_id: "xxx",
-        operation: "*",
-        right_value: 4,
-        result_value: 40,
-        created_at: "---",
-    },
-    {
-        id: "11",
-        parent_id: "1",
-        user_id: "xxx",
-        operation: "*",
-        right_value: 7,
-        result_value: 70,
-        created_at: "---",
-    },
-    {
-        id: "30",
-        parent_id: "3",
-        user_id: "xxx",
-        operation: "+",
-        right_value: 4,
-        result_value: 9,
-        created_at: "---",
-    },
-    {
-        id: "100",
-        parent_id: "10",
-        user_id: "xxx",
-        operation: "/",
-        right_value: 8,
-        result_value: 5,
-        created_at: "---",
-    },
-];
 
 type TreeNode = RouterOutputs["nodes"]["list"]["nodes"][0];
 type Node = TreeNode & { children?: TreeNode[] };
@@ -86,7 +20,6 @@ const buildTree = (flat: Node[]): Node[] => {
 
     const roots: Node[] = [];
 
-    // Step 2: Link children to parents
     map.forEach((node) => {
         if (node.parent_id) {
             const parent = map.get(node.parent_id);
@@ -94,7 +27,7 @@ const buildTree = (flat: Node[]): Node[] => {
                 parent.children!.push(node);
             }
         } else {
-            roots.push(node); // parent_id === null → root node
+            roots.push(node);
         }
     });
 
@@ -133,27 +66,27 @@ const Tree = () => {
                     {/* Parent */}
                     <div className="group flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Avatar className="h-12 w-12">
-                                <AvatarImage src="https://img.freepik.com/premium-vector/cute-banana-cartoon-vector-icon-illustration-logo-mascot-hand-drawn-concept-trandy-cartoon_519183-187.jpg?w=360" />
-                                <AvatarFallback>Mr Banana</AvatarFallback>
-                            </Avatar>
+                            <TreeAvatar username={item.user_username} />
+
                             <div className="">
                                 <div className="text-xl font-medium">
-                                    Mr. Banana:{" "}
+                                    {item.user_username}:{" "}
                                     <span className="text-red-500">
                                         {item.result_value}
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <button
-                            onClick={() => {
-                                setSelectedNode(item.id);
-                            }}
-                            className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                            <CirclePlus />
-                        </button>
+                        {authUser && (
+                            <button
+                                onClick={() => {
+                                    setSelectedNode(item.id);
+                                }}
+                                className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                <CirclePlus />
+                            </button>
+                        )}
                     </div>
 
                     {/* Children */}

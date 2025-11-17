@@ -11,21 +11,33 @@ export const nodeSchema = z.object({
     result_value: z.number(),
     created_at: z.coerce.date(),
 });
+export const nodeWithUsersSchema = nodeSchema.extend({
+    user_username: z.string(),
+});
 
 export const nodeRouter = router({
     list: publicProcedure
         .output(
             z.object({
                 message: z.string(),
-                nodes: z.array(nodeSchema),
+                nodes: z.array(nodeWithUsersSchema),
             })
         )
         .query(async ({ ctx }) => {
             try {
                 const result = await ctx.psql.query(
-                    `SELECT id, parent_id, user_id, operation, right_value::float, result_value::float, created_at 
-                     FROM nodes 
-                     ORDER BY created_at DESC`
+                    `SELECT 
+                        n.id,
+                        n.parent_id,
+                        n.user_id,
+                        u.username AS user_username,
+                        n.operation,
+                        n.right_value::float,
+                        n.result_value::float,
+                        n.created_at
+                    FROM nodes n
+                    LEFT JOIN users u ON n.user_id = u.id
+                    ORDER BY n.created_at DESC`
                 );
 
                 return {
